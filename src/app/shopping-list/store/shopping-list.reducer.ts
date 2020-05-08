@@ -9,15 +9,11 @@ export interface State {
   editedIngredientIndex: number;
 }
 
-export interface AppState {
-  shoppingList: State;
-}
-
-
 const initialState: State = {
   ingredients: [
     new Ingredient('Apples', 5),
     new Ingredient('Tomatoes', 10),
+    new Ingredient('Kiwi', 11),
   ],
   editedIngredient:null,
   editedIngredientIndex: -1, // we store -1 beacuse 0 will be a valid index
@@ -43,24 +39,29 @@ export function shoppingListReducer(
       };
     //--- UPDATE
     case ShoppingListActions.UPDATE_INGREDIENT:
-      const ingredient = state.ingredients[action.payload.index]
+      const ingredient = state.ingredients[state.editedIngredientIndex]
       const updatedIngredient = {
         ...ingredient, //it keeps the old ingredient and re-writes the new stuff, good practice but NOT MANDATORY
-        ...action.payload.ingredient //changes what need to be changed
+        ...action.payload //changes what need to be changed
       }
       const updatedIngredients = [...state.ingredients] //creating a copy of the old state ingredients so to safely edit
-      updatedIngredients[action.payload.index] = updatedIngredient
+      updatedIngredients[state.editedIngredientIndex] = updatedIngredient
       return {
         ...state,
-        ingredients: updatedIngredients
+        ingredients: updatedIngredients,
+        editedIngredient: null,
+        editedIngredientIndex: -1
       }
     //--- DELETE
     case ShoppingListActions.DELETE_INGREDIENT:
+      console.log('SLREDUCER, LINE 62, My index is: ', state.editedIngredientIndex)
       return {
         ...state,
         ingredients: state.ingredients.filter((ing, ingIndex)=> { //classic js filter, takes argument and index (automatically)
-          return ingIndex !== action.payload // return true/ false. In this case we return all items that are not with the deleted item index (action.payload)
-        })
+          return ingIndex !== state.editedIngredientIndex // return true/ false. In this case we return all items that are not with the deleted item index (action.payload)
+        }),
+        editedIngredientIndex: -1,
+        editedIngredient: null,
       }
 
       //--- START EDIT - I want to set the item INDEX and ITEM

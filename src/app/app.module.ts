@@ -1,7 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { shoppingListReducer } from './shopping-list/store/shopping-list.reducer'
+
+import * as fromApp from './store/app.reducer';
 
 
 import { AppComponent } from './app.component';
@@ -12,13 +13,14 @@ import { CoreModule } from './core.module';
 import { LoggingService } from './logging.service';
 import { StoreModule } from '@ngrx/store'
 
+
 @NgModule({
   declarations: [AppComponent, HeaderComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    StoreModule.forRoot({shoppingList: shoppingListReducer}),
+    StoreModule.forRoot(fromApp.appReducer                                                                                                                                                                            ),
     SharedModule,
     CoreModule
   ],
